@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Daler quiz — Axloq falsafasi (Etika)</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --card: #f8fafc;
+  --tx: #0f172a;
+  --mu: #64748b;
+  --ac: #000000;
+  --ok: #16a34a;
+  --no: #dc2626;
+  --bd: #e2e8f0;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100dvh;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: pan-y; /* Sahifani faqat tepaga-pastga siljitishga ruxsat beradi, horizontal zoom/siljishni cheklaydi */
+}
+
+main { max-width: 760px; margin: 0 auto; padding: 16px; padding-bottom: calc(60px + env(safe-area-inset-bottom, 20px)); }
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 4px 0;
+}
+
+.notion-icon {
+  width: 38px;
+  height: 38px;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+h1 { font-size: 24px; margin: 0 0 8px; font-weight: 700; color: #0f172a; }
+h2 { font-size: 20px; margin: 0 0 12px; font-weight: 600; color: #0f172a; }
+.mu { color: var(--mu); font-size: 14px; }
+
+button.btn-primary, button#go, button#fin, button#next-btn {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: #000000;
+  color: #ffffff;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  touch-action: manipulation;
+}
+
+button.btn-primary:hover, button#go:hover, button#fin:hover, button#next-btn:hover {
+  background: #27272a;
+}
+
+button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+button.g {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid var(--bd);
+  font-weight: 600;
+  transition: background 0.2s ease;
+  touch-action: manipulation;
+}
+
+button.g:hover { background: #e2e8f0; }
+
+.opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1.5px solid var(--bd);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  touch-action: manipulation;
+}
+
+.opt:hover { background: #f1f5f9; border-color: #cbd5e1; }
+.opt.sel { background: #f0fdf4 !important; border-color: #000000 !important; color: #000000; font-weight: 600; }
+.opt.ok { background: #dcfce7 !important; border-color: var(--ok) !important; color: #166534 !important; }
+.opt.no { background: #fee2e2 !important; border-color: var(--no) !important; color: #991b1b !important; }
+
+input.nm {
+  width: 100%;
+  font: inherit;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--bd);
+  background: #f8fafc;
+  color: #0f172a;
+  margin: 14px 0;
+  outline: none;
+}
+
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.tabs { display: flex; gap: 8px; }
+.tabs button { padding: 8px 14px; border-radius: 8px; font-size: 14px; }
+
+.q { padding: 10px 0; }
+.nav-btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd);
+}
+
+/* Faqat krossvord qismidagina o'ngga-chapga surish mumkin bo'lishi uchun */
+#grid-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  touch-action: pan-x;
+}
+
+#grid { display: grid; gap: 3px; justify-content: start; }
+.c { position: relative; width: 34px; height: 34px; flex-shrink: 0; }
+.c input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font: 700 16px system-ui;
+  text-transform: uppercase;
+  border: 1.5px solid var(--bd);
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 0;
+  -webkit-appearance: none;
+}
+.c input:focus { outline: 2px solid #000000; }
+.c.ok input { background: #dcfce7; border-color: var(--ok); color: #166534; }
+.c.no input { background: #fee2e2; border-color: var(--no); color: #991b1b; }
+.c.ans-hint input { background: #16a34a; color: #fff; font-weight: 900; border-color: #16a34a; }
+.c i { position: absolute; top: 1px; left: 3px; font: 700 9px system-ui; color: #64748b; font-style: normal; pointer-events: none; }
+
+.clue { padding: 6px 0; cursor: pointer; font-size: 15px; color: var(--mu); }
+.clue:hover { color: #0f172a; }
+
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--bd); font-size: 15px; }
+.me { background: #f1f5f9; }
+.big { font-size: 38px; font-weight: 800; color: #0f172a; }
+.score-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-left: 6px; }
+.badge-test { background: #f1f5f9; color: #0f172a; }
+.badge-cw { background: #dcfce7; color: #166534; }
+.hide { display: none; }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="brand-header">
+    <div class="notion-icon">D</div>
+    <div class="brand-title">Daler quiz</div>
+  </div>
+
+  <section id="s0" class="card">
+    <h1>🧠 Axloq falsafasi (Etika)</h1>
+    <p class="mu">15 ta test + 8 ta krossvord. Bilimingizni sinab ko'ring!</p>
+    <input class="nm" id="nm" placeholder="Ism va familiyangiz" maxlength="40" autocomplete="name">
+    <button id="go">Boshlash</button>
+    <p class="mu" style="margin-top:12px">Vaqt «Boshlash» bosilgach hisoblanadi. Urinish — bitta.</p>
+  </section>
+
+  <section id="s1" class="hide">
+    <div class="bar">
+      <div class="tabs">
+        <button id="t1" class="btn-primary">Test</button>
+        <button class="g" id="t2">Krossvord</button>
+      </div>
+      <b id="tm" style="font-size:18px;">00:00</b>
+      <button id="fin">Yakunlash</button>
+    </div>
+    <div id="p1" class="card"></div>
+    <div id="p2" class="card hide">
+      <h2>Krossvord</h2>
+      <p class="mu">Katakni bosing, harf yozing. Savolni bossangiz so‘z belgilanadi.</p>
+      <div id="grid-container">
+        <div id="grid"></div>
+      </div>
+      <div id="clues" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <section id="s2" class="hide card">
+    <h2>Natijangiz</h2>
+    <div class="big" id="tot"></div>
+    <p id="det" class="mu" style="font-size:16px; line-height:1.6; margin-top:10px;"></p>
+    
+    <div style="background:#f1f5f9; border:1px solid var(--bd); border-radius:12px; padding:16px; margin:18px 0;">
+      <h3 style="margin:0 0 8px 0; font-size:16px; color:#0f172a;">📊 Baholash Tizimi:</h3>
+      <ul style="margin:0; padding-left:20px; font-size:14px; color:var(--mu); line-height:1.7;">
+        <li><b>Test balli:</b> 15 ta test × 5 ball = max 75 ball</li>
+        <li><b>Krossvord balli:</b> 8 ta so‘z × 5 ball = max 40 ball</li>
+        <li><b>Tezlik bonusi:</b> Maksimal 10 ballgacha</li>
+        <li><b>Maksimal umumiy ball:</b> 125 ball</li>
+      </ul>
+    </div>
+
+    <button class="g" id="rev">Javoblarni ko‘rish (Test va Krossvord)</button>
+  </section>
+
+  <section id="lb" class="card">
+    <h2>🏆 Jonli Reyting</h2>
+    <div id="lbm" class="mu"></div>
+    <table>
+      <thead><tr><th>#</th><th>Ism</th><th>Natija</th><th>Ball</th><th>Vaqt</th></tr></thead>
+      <tbody id="lbt"></tbody>
+    </table>
+    <p><button class="g hide" id="clr" style="margin-top:12px">Reytingni tozalash (o‘qituvchi)</button></p>
+  </section>
+</main>
+
+<script>
+const Q = [
+  ["«Etika» so‘zi qaysi yunoncha so‘zdan olingan?", ["Ethos", "Logos", "Polis", "Kosmos"], 0],
+  ["Etikani ilmiy muomalaga birinchi bo‘lib kim kiritgan?", ["Aflotun", "Arastu", "Kant", "Forobiy"], 1],
+  ["Arastu tasnifida etika va siyosat qaysi guruhga kiradi?", ["Nazariy fanlar", "Amaliy fanlar", "Ijodiy fanlar", "Tabiiy fanlar"], 1],
+  ["Etika fanining asosiy predmeti nima?", ["Odob", "Xulq", "Axloq", "Qonun"], 2],
+  ["Axloq doirasining eng kichik qismi qaysi?", ["Odob", "Xulq", "Axloq", "Mas’uliyat"], 0],
+  ["Ajdodlarimizning eng ko‘hna e’tiqodiy-axloqiy kitobi qaysi?", ["Qobusnoma", "Avesto", "Guliston", "Qutadg‘u bilik"], 1],
+  ["Metaetika nimani o‘rganadi va tahlil qiladi?", ["Abort muammosini", "Kasbiy burchni", "Axloqiy tushunchalarni mantiqiy-lingvistik jihatdan", "Atrof-muhitni"], 2],
+  ["Abort, evtanaziya, sun’iy urug‘lantirish kabi muammolarni qaysi soha o‘rganadi?", ["Metaetika", "Normativ etika", "Amaliy axloq", "Estetika"], 2],
+  ["Axloqiy tushunchalarga ko‘ra, muhabbatning ziddi nima?", ["Hasad", "Nafrat", "Xudbinlik", "Qo‘rquv"], 1],
+  ["Etika fani nuqtai nazaridan «yaxshilik» qanday faoliyat hisoblanadi?", ["Taktikaviy", "Strategik umumbashariy", "Vaqtinchalik", "Sinfiy"], 1],
+  ["«Bioetika» atamasini fan va ilmiy muomalaga kim kiritgan?", ["Van Ranseler Potter", "Immanuil Kant", "Erich Fromm", "Arastu"], 0],
+  ["Potterning mashhur bioetikaga oid kitobi qanday nomlangan?", ["Bioetika — hayot sirlari", "Bioetika — kelajakka ko‘prik", "Etika asoslari", "Tirik tabiat"], 1],
+  ["Quyidagilardan qaysi biri tibbiy etikaning (bioetika) to‘rt asosiy qadriyatiga kirmaydi?", ["Avtonomiyani hurmat qilish", "Yomonlik qilmaslik", "Xayrixohlik", "Foyda va daromad ko‘rish"], 3],
+  ["Kiberetika nimani o‘rganadi?", ["Kompyuter va internet bilan bog‘liq axloqiy masalalarni", "Sudyalar odobini", "Daraxtlarni muhofaza qilishni", "Savdo qoidalarini"], 0],
+  ["«Kosmopolitizm» so‘zining ma'nosi nima?", ["Vatanparvar", "Yagona millat vakili", "Dunyo fuqarosi", "Madaniy meros hisobchisi"], 2]
+];
+
+const W = [
+  ["BIOETIKA", 5, 0, "h", "Tirik mavjudotlarga munosabatning axloqiy regulyativi"],
+  ["AXLOQ", 2, 2, "v", "Etika fanining predmeti"],
+  ["EZGULIK", 0, 5, "v", "Ijtimoiy xususiyatga ega, strategik ahamiyatli kategoriya"],
+  ["NAFRAT", 4, 7, "v", "Muhabbatning ziddi"],
+  ["ETIKA", 0, 5, "h", "Arastu fanga kiritgan nom"],
+  ["KASB", 0, 8, "v", "... axloqi: barcha kasblarga taalluqli kodlar to‘plami"],
+  ["POTTER", 9, 4, "h", "«Bioetika» atamasini kiritgan olim familiyasi"],
+  ["ETHOS", 9, 8, "v", "«Etika» so‘zi olingan yunoncha so‘z"]
+];
+
+const T_PTS = 5, W_PTS = 5, MAXT = 1200, BASE = Q.length * T_PTS + W.length * W_PTS;
+const $ = id => document.getElementById(id);
+let name = "", t0 = 0, timer, ans = Array(Q.length).fill(-1), done = false, myId = null, act = 0, currQ = 0;
+const fmt = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const cells = {};
+W.forEach((w, i) => {
+  for (let k = 0; k < w[0].length; k++) {
+    const r = w[1] + (w[3] == "v" ? k : 0), c = w[2] + (w[3] == "h" ? k : 0);
+    const key = r + "," + c;
+    (cells[key] = cells[key] || { ch: w[0][k], w: [] }).w.push(i);
+  }
+});
+const starts = {}; let n = 0;
+Object.keys(cells).map(k => k.split(",").map(Number)).sort((a, b) => a[0] - b[0] || a[1] - b[1]).forEach(([r, c]) => {
+  if (W.some(w => w[1] == r && w[2] == c)) starts[r + "," + c] = ++n;
+});
+const num = i => starts[W[i][1] + "," + W[i][2]];
+const R = Math.max(...Object.keys(cells).map(k => +k.split(",")[0])) + 1;
+const C = Math.max(...Object.keys(cells).map(k => +k.split(",")[1])) + 1;
+
+function drawGrid() {
+  const g = $("grid"); g.style.gridTemplateColumns = `repeat(${C}, 34px)`; g.innerHTML = "";
+  for (let r = 0; r < R; r++) {
+    for (let c = 0; c < C; c++) {
+      const d = document.createElement("div"), k = r + "," + c;
+      if (cells[k]) {
+        d.className = "c"; d.dataset.k = k;
+        d.innerHTML = (starts[k] ? `<i>${starts[k]}</i>` : "") + `<input maxlength="1" autocomplete="off" autocapitalize="characters">`;
+        const inp = d.querySelector("input");
+        inp.onfocus = () => {
+          const ws = cells[k].w;
+          if (!ws.includes(act)) act = ws[0];
+          else if (document.activeElement === inp && inp.dataset.f == "1" && ws.length > 1) act = ws[(ws.indexOf(act) + 1) % ws.length];
+          inp.dataset.f = "1"; hl();
+        };
+        inp.onblur = () => inp.dataset.f = "0";
+        inp.oninput = () => { inp.value = inp.value.toUpperCase().slice(-1); if (inp.value) step(k, 1); };
+        inp.onkeydown = e => { if (e.key == "Backspace" && !inp.value) step(k, -1); }
+      } else {
+        d.style.visibility = "hidden";
+      }
+      g.appendChild(d);
+    }
+  }
+  $("clues").innerHTML = ["h", "v"].map(dir => `<b style="color:#0f172a">${dir == "h" ? "Gorizontal →" : "Vertikal ↓"}</b>` + W.map((w, i) => w[3] == dir ? `<div class="clue" data-i="${i}">${num(i)}. ${esc(w[4])} <span class="mu">(${w[0].length} ta harf)</span></div>` : "").join("")).join("");
+  document.querySelectorAll(".clue").forEach(e => e.onclick = () => { act = +e.dataset.i; hl(); const w = W[act]; document.querySelector(`[data-k="${w[1]},${w[2]}"] input`).focus(); });
+}
+
+function pos(i, k) { const w = W[i]; return [w[1] + (w[3] == "v" ? k : 0), w[2] + (w[3] == "h" ? k : 0)]; }
+function step(key, d) {
+  const w = W[act], [r0, c0] = key.split(",").map(Number);
+  const k = w[3] == "h" ? c0 - w[2] : r0 - w[1];
+  const nk = k + d; if (nk < 0 || nk >= w[0].length) return;
+  const [r, c] = pos(act, nk);
+  const e = document.querySelector(`[data-k="${r},${c}"] input`); e && e.focus();
+}
+function hl() {
+  document.querySelectorAll(".c").forEach(e => e.classList.remove("hl"));
+  for (let k = 0; k < W[act][0].length; k++) {
+    const [r, c] = pos(act, k);
+    const cell = document.querySelector(`[data-k="${r},${c}"]`);
+    if (cell) cell.classList.add("hl");
+  }
+}
+function val(r, c) { const inp = document.querySelector(`[data-k="${r},${c}"] input`); return inp ? (inp.value || "").toUpperCase() : ""; }
+function cwScore() { return W.map((w, i) => [...w[0]].every((ch, k) => val(...pos(i, k)) == ch)); }
+
+function drawTest(rev) {
+  if (rev) {
+    $("p1").innerHTML = `<h2>Test natijalari va to‘g‘ri javoblar</h2>` + Q.map((q, i) => `<div class="q"><b style="font-size:16px; color:#0f172a;">${i + 1}. ${esc(q[0])}</b>` + q[1].map((o, j) => `<button class="opt ${j == q[2] ? "ok" : (ans[i] == j ? "no" : "")}">${esc(o)} ${j == q[2] ? "✓ (To'g'ri javob)" : ""}</button>`).join("") + `</div>`).join("");
+    return;
+  }
+  const q = Q[currQ];
+  $("p1").innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h2>Savol ${currQ + 1} / ${Q.length}</h2><span class="mu">Belgilangan: ${ans.filter(a => a != -1).length}/${Q.length}</span></div>` +
+    `<div class="q"><b style="font-size:17px; color:#0f172a; line-height:1.5;">${currQ + 1}. ${esc(q[0])}</b>` +
+    q[1].map((o, j) => `<button class="opt ${ans[currQ] == j ? "sel" : ""}" data-j="${j}">${esc(o)}</button>`).join("") +
+    `</div>` +
+    `<div class="nav-btns">` +
+    `<button class="g" id="prev-btn" ${currQ == 0 ? "disabled" : ""}>← Oldingisi</button>` +
+    `<button class="g" id="skip-btn">${currQ == Q.length - 1 ? "Krossvordga o‘tish →" : "O‘tkazib yuborish →"}</button>` +
+    `<button id="next-btn">${currQ == Q.length - 1 ? "Krossvordga o‘tish →" : "Keyingisi →"}</button>` +
+    `</div>`;
+
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    ans[currQ] = +b.dataset.j;
+    drawTest();
+  });
+
+  const prevBtn = $("prev-btn"); if (prevBtn) prevBtn.onclick = () => { if (currQ > 0) { currQ--; drawTest(); } };
+  const skipBtn = $("skip-btn"); if (skipBtn) skipBtn.onclick = () => { if (currQ < Q.length - 1) { currQ++; drawTest(); } else { tab(2); } };
+  const nextBtn = $("next-btn"); if (nextBtn) nextBtn.onclick = () => { if (currQ < Q.length - 1) { currQ++; drawTest(); } else { tab(2); } };
+}
+
+function tab(n) {
+  $("p1").classList.toggle("hide", n != 1);
+  $("p2").classList.toggle("hide", n != 2);
+  $("t1").className = n == 1 ? "btn-primary" : "g";
+  $("t2").className = n == 2 ? "btn-primary" : "g";
+}
+$("t1").onclick = () => tab(1);
+$("t2").onclick = () => tab(2);
+
+$("go").onclick = () => {
+  name = $("nm").value.trim();
+  if (name.length < 3) { $("nm").focus(); return; }
+  $("s0").classList.add("hide"); $("s1").classList.remove("hide"); currQ = 0; drawTest(); drawGrid(); hl(); t0 = Date.now();
+  timer = setInterval(() => $("tm").textContent = fmt(Math.floor((Date.now() - t0) / 1000)), 500);
+};
+
+$("fin").onclick = async () => {
+  const un = ans.filter(a => a < 0).length;
+  if (un && !confirm(`${un} ta savolga javob bermadingiz. Yakunlaymizmi?`)) return;
+  clearInterval(timer); const sec = Math.floor((Date.now() - t0) / 1000);
+  const tc = ans.filter((a, i) => a == Q[i][2]).length, cws = cwScore(), wc = cws.filter(Boolean).length;
+  const base = tc * T_PTS + wc * W_PTS, bonus = 10 * (base / BASE) * Math.max(0, 1 - sec / MAXT), total = Math.round((base + bonus) * 100) / 100;
+  done = true; $("s1").classList.add("hide"); $("s2").classList.remove("hide");
+  $("tot").textContent = total.toFixed(2) + " ball";
+  $("det").innerHTML = `<b>Test:</b> ${tc}/${Q.length} ta to'g'ri (${tc * T_PTS} ball)<br><b>Krossvord:</b> ${wc}/${W.length} so‘z to'g'ri (${wc * W_PTS} ball)<br><b>Vaqt:</b> ${fmt(sec)} (Tezlik bonusi: +${bonus.toFixed(2)} ball)`;
+
+  W.forEach((w, i) => {
+    for (let k = 0; k < w[0].length; k++) {
+      const [r, c] = pos(i, k);
+      const cellEl = document.querySelector(`[data-k="${r},${c}"]`);
+      if (cellEl) {
+        if (val(r, c) === w[0][k]) cellEl.classList.add("ok");
+        else cellEl.classList.add("no");
+      }
+    }
+  });
+
+  let cid = localStorage.getItem("etika_cid");
+  if (!cid) { cid = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("etika_cid", cid); }
+  myId = cid;
+
+  const localRecord = { id: cid, cid, name, test: tc, cw: wc, sec, total, ts: Date.now() };
+  try {
+    let localRows = JSON.parse(localStorage.getItem("etika_local_lb") || "[]");
+    localRows = localRows.filter(r => r.cid !== cid);
+    localRows.push(localRecord);
+    localStorage.setItem("etika_local_lb", JSON.stringify(localRows));
+  } catch (e) {}
+
+  try {
+    await fetch("/api/results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cid, name, test: tc, cw: wc, sec }) });
+  } catch (e) {
+    $("lbm").textContent = "Oflayn rejim: Natijangiz saqlandi.";
+  }
+  await loadLb();
+};
+
+$("rev").onclick = () => {
+  $("s2").classList.add("hide");
+  $("s1").classList.remove("hide");
+  $("fin").classList.add("hide");
+  drawTest(true);
+
+  W.forEach((w, i) => {
+    for (let k = 0; k < w[0].length; k++) {
+      const [r, c] = pos(i, k);
+      const inp = document.querySelector(`[data-k="${r},${c}"] input`);
+      if (inp) { inp.value = w[0][k]; inp.disabled = true; }
+      const cell = document.querySelector(`[data-k="${r},${c}"]`);
+      if (cell) cell.classList.add("ans-hint");
+    }
+  });
+};
+
+function showLb(rows) {
+  rows.sort((a, b) => b.total - a.total || a.sec - b.sec);
+  $("lbt").innerHTML = rows.map((r, i) => `
+    <tr class="${r.id == myId || r.cid == myId ? "me" : ""}">
+      <td>${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</td>
+      <td><b style="color:#0f172a">${esc(r.name)}</b> ${r.id == myId || r.cid == myId ? "<span style='color:var(--mu)'>(Siz)</span>" : ""}</td>
+      <td><span class="score-badge badge-test">${r.test}/${Q.length} test</span> <span class="score-badge badge-cw">${r.cw}/${W.length} krossvord</span></td>
+      <td><b style="color:#0f172a; font-size:16px;">${(+r.total).toFixed(2)}</b> ball</td>
+      <td>${fmt(r.sec)}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="5" class="mu">Hozircha reyting mavjud emas</td></tr>`;
+}
+
+async function loadLb() {
+  let rows = [];
+  try {
+    const r = await fetch("/api/results");
+    if (r.ok) rows = await r.json();
+  } catch (e) {}
+
+  try {
+    const localRows = JSON.parse(localStorage.getItem("etika_local_lb") || "[]");
+    localRows.forEach(lr => {
+      if (!rows.some(r => r.cid === lr.cid || r.id === lr.cid)) rows.push(lr);
+    });
+  } catch (e) {}
+
+  showLb(rows);
+}
+
+try { myId = localStorage.getItem("etika_cid"); } catch (e) {}
+loadLb();
+setInterval(loadLb, 5000);
+
+if (location.search.includes("admin")) $("clr").classList.remove("hide");
+$("clr").onclick = async () => {
+  const k = prompt("Admin kalit:"); if (!k) return;
+  const r = await fetch("/api/results", { method: "DELETE", headers: { "x-admin-key": k } });
+  localStorage.removeItem("etika_local_lb");
+  alert(r.ok ? "Tozalandi" : "Kalit noto‘g‘ri");
+  loadLb();
+};
+</script>
+
+</body>
+</html>
