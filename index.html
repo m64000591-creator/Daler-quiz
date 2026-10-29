@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Daler quiz — Axloq falsafasi (Etika)</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --card: #f8fafc;
+  --tx: #0f172a;
+  --mu: #64748b;
+  --ac: #000000;
+  --ok: #16a34a;
+  --no: #dc2626;
+  --bd: #e2e8f0;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; touch-action: manipulation; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100dvh;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+main { max-width: 760px; margin: 0 auto; padding: 16px; padding-bottom: calc(40px + env(safe-area-inset-bottom, 20px)); }
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 4px 0;
+}
+
+.notion-icon {
+  width: 38px;
+  height: 38px;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 { font-size: 24px; margin: 0 0 8px; font-weight: 700; color: #0f172a; }
+h2 { font-size: 20px; margin: 0 0 12px; font-weight: 600; color: #0f172a; }
+.mu { color: var(--mu); font-size: 14px; }
+
+button.btn-primary, button#go, button#fin, button#next-btn, .nav-btn {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: #000000;
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+button.btn-primary:hover, button#go:hover, button#fin:hover, button#next-btn:hover {
+  background: #27272a;
+}
+
+button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+button.g {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid var(--bd);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button.g:hover { background: #e2e8f0; }
+
+.opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1.5px solid var(--bd);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.opt:hover { background: #f1f5f9; border-color: #cbd5e1; }
+.opt.sel { background: #f0fdf4 !important; border-color: #000000 !important; color: #000000; font-weight: 600; }
+
+input.nm {
+  width: 100%;
+  font: inherit;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--bd);
+  background: #f8fafc;
+  color: #0f172a;
+  margin: 14px 0;
+  outline: none;
+}
+
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.tabs { display: flex; gap: 8px; }
+.tabs button { padding: 8px 14px; border-radius: 8px; font-size: 14px; }
+
+.nav-btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd);
+}
+
+#grid { display: grid; gap: 3px; overflow-x: auto; padding-bottom: 8px; justify-content: start; }
+.c { position: relative; width: 34px; height: 34px; }
+.c input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font: 700 16px system-ui;
+  text-transform: uppercase;
+  border: 1.5px solid var(--bd);
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 0;
+}
+.c input:focus { outline: 2px solid #000000; }
+.c.ok input { background: #dcfce7; border-color: var(--ok); color: #166534; }
+.c.no input { background: #fee2e2; border-color: var(--no); color: #991b1b; }
+.c i { position: absolute; top: 1px; left: 3px; font: 700 9px system-ui; color: #64748b; font-style: normal; }
+
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--bd); font-size: 15px; }
+.hide { display: none; }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="brand-header">
+    <div class="notion-icon">D</div>
+    <div class="brand-title">Daler quiz</div>
+  </div>
+
+  <section id="s0" class="card">
+    <h1>🧠 Axloq falsafasi (Etika)</h1>
+    <p class="mu">15 ta test + 8 ta krossvord. Bilimingizni sinab ko'ring!</p>
+    <input class="nm" id="nm" placeholder="Ism va familiyangiz" maxlength="40" autocomplete="name">
+    <button id="go">Boshlash</button>
+    <p class="mu" style="margin-top:12px">Vaqt «Boshlash» bosilgach hisoblanadi. Urinish — bitta.</p>
+  </section>
+
+  <section id="s1" class="hide">
+    <div class="bar">
+      <div class="tabs">
+        <button id="t1" class="btn-primary">Test</button>
+        <button class="g" id="t2">Krossvord</button>
+      </div>
+      <b id="tm" style="font-size:18px;">00:00</b>
+      <button id="fin">Yakunlash</button>
+    </div>
+    <div id="p1" class="card"></div>
+    <div id="p2" class="card hide">
+      <h2>Krossvord</h2>
+      <p class="mu">Katakni bosing, harf yozing. Savolni bossangiz so‘z belgilanadi.</p>
+      <div id="grid"></div>
+      <div id="clues" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <section id="s2" class="hide card">
+    <h2>Natijangiz</h2>
+    <div class="big" id="tot"></div>
+    <p id="det" class="mu" style="font-size:16px; line-height:1.6; margin-top:10px;"></p>
+    <button class="g" id="rev" style="margin-top:14px;">Javoblarni ko‘rish</button>
+  </section>
+
+  <section id="lb" class="card">
+    <h2>🏆 Jonli Reyting</h2>
+    <table>
+      <thead><tr><th>#</th><th>Ism</th><th>Natija</th><th>Ball</th><th>Vaqt</th></tr></thead>
+      <tbody id="lbt"></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+// Savollar va krossvordlar to'g'ridan-to'g'ri index ichida
+const Q = [
+  ["«Etika» so‘zi qaysi yunoncha so‘zdan olingan?", ["Ethos", "Logos", "Polis", "Kosmos"], 0],
+  ["Etikani ilmiy muomalaga birinchi bo‘lib kim kiritgan?", ["Aflotun", "Arastu", "Kant", "Forobiy"], 1],
+  ["Arastu tasnifida etika va siyosat qaysi guruhga kiradi?", ["Nazariy fanlar", "Amaliy fanlar", "Ijodiy fanlar", "Tabiiy fanlar"], 1],
+  ["Etika fanining asosiy predmeti nima?", ["Odob", "Xulq", "Axloq", "Qonun"], 2],
+  ["Axloq doirasining eng kichik qismi qaysi?", ["Odob", "Xulq", "Axloq", "Mas’uliyat"], 0],
+  ["Ajdodlarimizning eng ko‘hna e’tiqodiy-axloqiy kitobi qaysi?", ["Qobusnoma", "Avesto", "Guliston", "Qutadg‘u bilik"], 1],
+  ["Metaetika nimani o‘rganadi va tahlil qiladi?", ["Abort muammosini", "Kasbiy burchni", "Axloqiy tushunchalarni mantiqiy-lingvistik jihatdan", "Atrof-muhitni"], 2],
+  ["Abort, evtanaziya, sun’iy urug‘lantirish kabi muammolarni qaysi soha o‘rganadi?", ["Metaetika", "Normativ etika", "Amaliy axloq", "Estetika"], 2],
+  ["Axloqiy tushunchalarga ko‘ra, muhabbatning ziddi nima?", ["Hasad", "Nafrat", "Xudbinlik", "Qo‘rquv"], 1],
+  ["Etika fani nuqtai nazaridan «yaxshilik» qanday faoliyat hisoblanadi?", ["Taktikaviy", "Strategik umumbashariy", "Vaqtinchalik", "Sinfiy"], 1],
+  ["«Bioetika» atamasini fan va ilmiy muomalaga kim kiritgan?", ["Van Ranseler Potter", "Immanuil Kant", "Erich Fromm", "Arastu"], 0],
+  ["Potterning mashhur bioetikaga oid kitobi qanday nomlangan?", ["Bioetika — hayot sirlari", "Bioetika — kelajakka ko‘prik", "Etika asoslari", "Tibbiyot deontologiyasi"], 1],
+  ["Axloqiy ongning asosiy tarkibiy qismlari qaysilar?", ["Hissiyot va idrok", "Axloqiy ong, axloqiy munosabatlar va axloqiy faoliyat", "Faqat nazariya", "Qonun va tartib"], 1],
+  ["Professional etika nima?", ["Umumiy axloq qoidalari", "Muayyan kasb egalarining axloqiy burch va qoidalari", "Diniy marosimlar", "Siyosiy qarashlar"], 1],
+  ["Deontologiya nimani o‘rganadi?", ["Go‘zallikni", "Burch va majburiyatlar ta’limotini", "Iqtisodiy munosabatlarni", "Tabiat qonunlarini"], 1]
+];
+
+// Asosiy o'zgaruvchilar va logika shu yerda ishlaydi...
+</script>
+</body>
+</html>
