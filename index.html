@@ -870,20 +870,31 @@ function showLb(rows){
 
 async function loadLb(){
   await flushPending();
-  let rows = [];
+  let rows=[],ok=false;
   try{
-    const r=await fetch("/api/results");
-    if(r.ok) rows = await r.json();
+    const r=await fetch("/api/results",{cache:"no-store"});
+    if(r.ok){
+      rows=await r.json();ok=true;
+      const cl=+(r.headers.get("x-cleared")||0);
+      if(cl>+(localStorage.getItem("etika_cleared")||0)){ // o‘qituvchi reytingni tozaladi
+        localStorage.setItem("etika_cleared",cl);
+        localStorage.removeItem("etika_cache");localStorage.removeItem("etika_local_lb");
+      }
+    }
   }catch(e){}
-  
-  try {
-    const localRows = JSON.parse(localStorage.getItem("etika_local_lb") || "[]");
-    localRows.forEach(lr => {
-      if(!rows.some(r => r.cid === lr.cid || r.id === lr.cid)) rows.push(lr);
-    });
-  } catch(e) {}
-
-  showLb(rows);
+  rows=rows.map(r=>({...r,cid:r.cid||r.id}));
+  // Brauzerda reytingning nusxasi saqlanadi: server qayta ishga tushsa, shu nusxadan tiklanadi
+  let cache=[];try{cache=JSON.parse(localStorage.getItem("etika_cache")||"[]")}catch(e){}
+  const byId=new Map(cache.map(r=>[r.cid,r]));
+  rows.forEach(r=>byId.set(r.cid,r));
+  try{JSON.parse(localStorage.getItem("etika_local_lb")||"[]").forEach(lr=>{if(!byId.has(lr.cid))byId.set(lr.cid,lr)})}catch(e){}
+  const all=[...byId.values()];
+  try{localStorage.setItem("etika_cache",JSON.stringify(all))}catch(e){}
+  if(ok){
+    const have=new Set(rows.map(r=>r.cid)),missing=all.filter(r=>!have.has(r.cid));
+    if(missing.length)fetch("/api/restore",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({rows:missing.slice(0,300)})}).catch(()=>{});
+  }
+  showLb(all);
 }
 
 try{myId=localStorage.getItem("etika_cid")}catch(e){}
@@ -894,7 +905,7 @@ if(location.search.includes("admin"))$("clr").classList.remove("hide");
 $("clr").onclick=async()=>{
   const k=prompt("Admin kalit:");if(!k)return;
   const r=await fetch("/api/results",{method:"DELETE",headers:{"x-admin-key":k}});
-  localStorage.removeItem("etika_local_lb");
+  localStorage.removeItem("etika_local_lb");localStorage.removeItem("etika_cache");
   alert(r.ok?"Tozalandi":"Kalit noto‘g‘ri");
   loadLb()
 };
