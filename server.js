@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
@@ -5,7 +7,6 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// MongoDB Atlas ulanish manzili (to'g'ridan-to'g'ri kiritildi)
 const MONGODB_URI = "mongodb+srv://m64000591_db_user:4LlkbQ52fEXhmVuZ@cluster0.ks0uirc.mongodb.net/?retryWrites=true&w=majority";
 const ADMIN_KEY = process.env.ADMIN_KEY || 'admin123';
 
@@ -14,7 +15,6 @@ app.use(express.static(path.join(__dirname)));
 
 let db, quizCollection, resultsCollection;
 
-// MongoDB'ga ulanish
 MongoClient.connect(MONGODB_URI)
   .then(client => {
     db = client.db('daler_quiz');
@@ -22,7 +22,6 @@ MongoClient.connect(MONGODB_URI)
     resultsCollection = db.collection('results');
     console.log("MongoDB muvaffaqiyatli ulandi!");
 
-    // Serverni ishga tushirish
     app.listen(PORT, () => {
       console.log(`Server ishga tushdi: port ${PORT}`);
     });
@@ -32,7 +31,6 @@ MongoClient.connect(MONGODB_URI)
     process.exit(1);
   });
 
-// Admin parolini tekshiruvchi yordamchi funksiya
 const verifyAdmin = (req, res, next) => {
   const key = req.headers['x-admin-key'];
   if (key === ADMIN_KEY) {
@@ -42,9 +40,6 @@ const verifyAdmin = (req, res, next) => {
   }
 };
 
-// --- API QISMI ---
-
-// 1. Test ma'lumotlarini olish (umumiy)
 app.get('/api/quiz', async (req, res) => {
   try {
     let data = await quizCollection.findOne({ type: 'main' });
@@ -64,7 +59,6 @@ app.get('/api/quiz', async (req, res) => {
   }
 });
 
-// 2. Admin uchun test ma'lumotlarini olish
 app.get('/api/admin/quiz', verifyAdmin, async (req, res) => {
   try {
     let data = await quizCollection.findOne({ type: 'main' });
@@ -74,7 +68,6 @@ app.get('/api/admin/quiz', verifyAdmin, async (req, res) => {
   }
 });
 
-// 3. Test ma'lumotlarini yangilash (Admin)
 app.put('/api/admin/quiz', verifyAdmin, async (req, res) => {
   try {
     const newData = req.body;
@@ -92,7 +85,6 @@ app.put('/api/admin/quiz', verifyAdmin, async (req, res) => {
   }
 });
 
-// 4. Natijani saqlash (Talaba topshirganda)
 app.post('/api/results', async (req, res) => {
   try {
     const result = {
@@ -112,7 +104,6 @@ app.post('/api/results', async (req, res) => {
   }
 });
 
-// 5. Natijalarni olish (Admin)
 app.get('/api/results', async (req, res) => {
   try {
     const results = await resultsCollection.find({}).sort({ total: -1 }).toArray();
@@ -122,7 +113,6 @@ app.get('/api/results', async (req, res) => {
   }
 });
 
-// 6. Bitta natijani o'chirish (Admin)
 app.delete('/api/results/:id', verifyAdmin, async (req, res) => {
   try {
     await resultsCollection.deleteOne({ id: req.params.id });
@@ -132,7 +122,6 @@ app.delete('/api/results/:id', verifyAdmin, async (req, res) => {
   }
 });
 
-// 7. Barcha natijalarni o'chirish (Admin)
 app.delete('/api/results', verifyAdmin, async (req, res) => {
   try {
     await resultsCollection.deleteMany({});
@@ -142,7 +131,6 @@ app.delete('/api/results', verifyAdmin, async (req, res) => {
   }
 });
 
-// Admin sahifasini ochish uchun yo'nalish
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
